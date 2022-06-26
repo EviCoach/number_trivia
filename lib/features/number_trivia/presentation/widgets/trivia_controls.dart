@@ -63,7 +63,7 @@ class _TriviaControlsState extends State<TriviaControls> {
     controller.clear();
     BlocProvider.of<NumberTriviaBloc>(context)
         .add(GetTriviaForConcreteNumber(inputStr));
-    inputStr = "";
+    // inputStr = "";
     // context.read<NumberTriviaBloc>().add(GetTriviaForConcreteNumber(inputStr));
   }
 

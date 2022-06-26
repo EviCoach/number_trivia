@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:number_trivia/core/error/failures.dart';
 
+import '../../../../core/usecases/usecase.dart';
 import '../../../../core/util/input_converter.dart';
 import '../../domain/entities/number_trivia.dart';
 import '../../domain/usecases/get_concrete_number_trivia.dart';
@@ -40,6 +41,10 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
         emit(Loading());
         final failureOrTrivia =
             await getConcreteNumberTrivia(Params(number: num));
+        emit(_eitherLoadedOrErrorState(failureOrTrivia));
+      } else if (event is GetTriviaForRandomNumber) {
+        emit(Loading());
+        final failureOrTrivia = await getRandomNumberTrivia(NoParams());
         emit(_eitherLoadedOrErrorState(failureOrTrivia));
       }
     });
