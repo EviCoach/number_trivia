@@ -1,4 +1,5 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_local_data_source.dart';
@@ -56,4 +57,5 @@ Future<void> init() async {
   serviceLocator.registerLazySingleton(() => sharedPreferences);
   serviceLocator.registerLazySingleton(() => http.Client());
   serviceLocator.registerLazySingleton(() => DataConnectionChecker());
+  debugPrint("Dependencies initialized");
 }

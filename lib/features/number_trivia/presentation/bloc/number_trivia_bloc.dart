@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:number_trivia/core/error/failures.dart';
-import 'package:number_trivia/core/usecases/usecase.dart';
 
 import '../../../../core/util/input_converter.dart';
 import '../../domain/entities/number_trivia.dart';
@@ -27,31 +26,43 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
       required this.getRandomNumberTrivia,
       required this.inputConverter})
       : super(Empty()) {
-    on<NumberTriviaEvent>((event, emit) {
-      // TODO: implement event handler
+    //https://flutterhq.com/questions-and-answers/983/flutter-bloc-migration-due-to-mapeventtostate-is-not-working
+    on<NumberTriviaEvent>((event, emit) async {
+      if (event is GetTriviaForConcreteNumber) {
+        final inputEither =
+            inputConverter.inputToUnsignedInteger(event.numberString);
+
+        var inputOrError = inputEither.fold(
+            (failure) => const Error(message: invalidInputFailureMessage),
+            (integer) => integer);
+        if (inputOrError is Error) return emit(inputOrError);
+        int num = inputOrError as int;
+        emit(Loading());
+        final failureOrTrivia =
+            await getConcreteNumberTrivia(Params(number: num));
+        emit(_eitherLoadedOrErrorState(failureOrTrivia));
+      }
     });
-    on<GetTriviaForConcreteNumber>(_onGetTrivia);
-    on<GetTriviaForRandomNumber>(_onGetTrivia);
   }
 
-  _onGetTrivia(event, emit) async* {
-    if (event is GetTriviaForConcreteNumber) {
-      final inputEither =
-          inputConverter.inputToUnsignedInteger(event.numberString);
-      yield* inputEither.fold((failure) async* {
-        yield const Error(message: invalidInputFailureMessage);
-      }, (integer) async* {
-        yield Loading();
-        final failureOrTrivia =
-            await getConcreteNumberTrivia(Params(number: integer));
-        yield _eitherLoadedOrErrorState(failureOrTrivia);
-      });
-    } else if (event is GetTriviaForRandomNumber) {
-      yield Loading();
-      final failureOrTrivia = await getRandomNumberTrivia(NoParams());
-      yield _eitherLoadedOrErrorState(failureOrTrivia);
-    }
-  }
+  // _onGetTrivia(event, emit) async* {
+  //   if (event is GetTriviaForConcreteNumber) {
+  //     final inputEither =
+  //         inputConverter.inputToUnsignedInteger(event.numberString);
+  //     yield* inputEither.fold((failure) async* {
+  //       yield const Error(message: invalidInputFailureMessage);
+  //     }, (integer) async* {
+  //       yield Loading();
+  //       final failureOrTrivia =
+  //           await getConcreteNumberTrivia(Params(number: integer));
+  //       yield _eitherLoadedOrErrorState(failureOrTrivia);
+  //     });
+  //   } else if (event is GetTriviaForRandomNumber) {
+  //     yield Loading();
+  //     final failureOrTrivia = await getRandomNumberTrivia(NoParams());
+  //     yield _eitherLoadedOrErrorState(failureOrTrivia);
+  //   }
+  // }
 
   NumberTriviaState _eitherLoadedOrErrorState(
       Either<Failure, NumberTrivia> failureOrTrivia) {
