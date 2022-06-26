@@ -5,7 +5,7 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:number_trivia/core/platform/network_info.dart' as _i7;
+import 'package:number_trivia/core/network/network_info.dart' as _i7;
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_local_data_source.dart'
     as _i5;
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_remote_data_source.dart'
@@ -55,7 +55,7 @@ class MockNumberTriviaRemoteDataSource extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockNumberTriviaLocalDatasource extends _i1.Mock
-    implements _i5.NumberTriviaLocalDatasource {
+    implements _i5.NumberTriviaLocalDataSource {
   MockNumberTriviaLocalDatasource() {
     _i1.throwOnMissingStub(this);
   }

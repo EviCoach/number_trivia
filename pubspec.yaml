@@ -22,11 +22,13 @@ dependencies:
   # Functional programming thingies
   dartz:
   # Remote API
-  connectivity:
+#  connectivity:
+  # Swap the connectivity package for this
+  data_connection_checker: ^0.3.4
   http:
   # Local cache
-  shared_preferences:
   cupertino_icons: ^1.0.2
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
